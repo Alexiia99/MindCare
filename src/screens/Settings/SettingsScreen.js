@@ -169,6 +169,13 @@ const SettingsScreen = ({ navigation }) => {
           type: 'navigate',
           onPress: () => Alert.alert('Próximamente', 'Función de contactos personalizados en desarrollo'),
         },
+        {
+          icon: 'notifications-outline',
+          title: 'Recordatorios',
+          subtitle: 'Configura notificaciones inteligentes',
+          type: 'navigation',
+          onPress: () => navigation.navigate('NotificationSettings'),
+        },
       ],
     },
     {

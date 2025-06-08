@@ -1,3 +1,4 @@
+// src/screens/Dashboard/DashboardScreen.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -12,9 +13,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, typography, spacing } from '../../constants/colors';
-import { getTasksForLevel, taskLevels } from '../../constants/tasks';
-import { getTodayMood, getTodayTasks, getSettings } from '../../utils/storage';
+import { getTasksForLevel, taskLevels, getAllTasksForLevel } from '../../constants/tasks';
+import { getTodayMood, getTodayTasks, getSettings, saveSettings } from '../../utils/storage';
 import { getContextualQuote } from '../../constants/quotes';
+import LevelSuggestion from '../../components/LevelSuggestion';
 
 const DashboardScreen = ({ navigation }) => {
   const [currentLevel, setCurrentLevel] = useState(2);
@@ -25,6 +27,7 @@ const DashboardScreen = ({ navigation }) => {
     text: "Cada día es una nueva oportunidad para ser amable contigo mismo.",
     author: "Anónimo"
   });
+  const [showLevelSuggestion, setShowLevelSuggestion] = useState(true);
 
   useEffect(() => {
     loadDashboardData();
@@ -44,16 +47,47 @@ const DashboardScreen = ({ navigation }) => {
       const mood = await getTodayMood();
       const tasks = await getTodayTasks();
       
-      setCurrentLevel(settings.currentLevel);
+      setCurrentLevel(settings.currentLevel || 2);
       setTodayMood(mood);
       setCompletedTasks(tasks);
-      setAvailableTasks(getTasksForLevel(settings.currentLevel));
+      
+      // Cargar tareas disponibles (incluyendo personalizadas)
+      const tasksForLevel = await getAllTasksForLevel(settings.currentLevel || 2);
+      setAvailableTasks(tasksForLevel);
       
       // Cargar cita contextual
       const quote = await getContextualQuote(getTodayMood);
       setDailyQuote(quote);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+    }
+  };
+
+  // Nueva función para manejar cambios de nivel
+  const handleLevelChanged = async (newLevel) => {
+    try {
+      const settings = await getSettings();
+      const updatedSettings = {
+        ...settings,
+        currentLevel: newLevel
+      };
+      await saveSettings(updatedSettings);
+      
+      // Actualizar el estado local
+      setCurrentLevel(newLevel);
+      
+      // Recargar las tareas disponibles para el nuevo nivel
+      const newTasks = await getAllTasksForLevel(newLevel);
+      setAvailableTasks(newTasks);
+      
+      Alert.alert(
+        '¡Nivel actualizado! ✨',
+        `Ahora estás en modo "${taskLevels[newLevel].name}". Tus tareas se han ajustado automáticamente.`
+      );
+      
+    } catch (error) {
+      console.error('Error updating level:', error);
+      Alert.alert('Error', 'No se pudo actualizar el nivel');
     }
   };
 
@@ -109,7 +143,7 @@ const DashboardScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Header - ESPACIADO OPTIMIZADO */}
+        {/* Header */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>¡Hola!</Text>
@@ -140,6 +174,11 @@ const DashboardScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* NUEVO: Sugerencia automática de nivel */}
+        {showLevelSuggestion && (
+          <LevelSuggestion onLevelChanged={handleLevelChanged} />
+        )}
 
         {/* Nivel actual */}
         <View style={styles.card}>
@@ -236,18 +275,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  // NUEVO: Scroll content optimizado
   scrollContent: {
     paddingBottom: Platform.OS === 'ios' ? 85 : 75,
   },
-  // HEADER OPTIMIZADO
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16, // REDUCIDO
-    paddingTop: 8, // REDUCIDO de spacing.sm
-    paddingBottom: 8, // NUEVO
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   greeting: {
     fontSize: typography.sizes['2xl'],
@@ -262,10 +299,10 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8, // REDUCIDO
+    gap: 8,
   },
   settingsButton: {
-    padding: 8, // REDUCIDO
+    padding: 8,
     borderRadius: 12,
     backgroundColor: colors.white,
     elevation: 1,
@@ -278,8 +315,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.danger,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12, // REDUCIDO
-    paddingVertical: 8, // REDUCIDO
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 20,
     elevation: 3,
     shadowColor: colors.danger,
@@ -290,14 +327,13 @@ const styles = StyleSheet.create({
   sosText: {
     color: colors.white,
     fontWeight: typography.weights.bold,
-    marginLeft: 4, // REDUCIDO
+    marginLeft: 4,
   },
-  // CARD OPTIMIZADA
   card: {
     backgroundColor: colors.white,
-    marginHorizontal: 16, // REDUCIDO
-    marginBottom: 12, // REDUCIDO de spacing.lg
-    padding: 12, // REDUCIDO de spacing.lg
+    marginHorizontal: 16,
+    marginBottom: 12,
+    padding: 12,
     borderRadius: 16,
     elevation: 2,
     shadowColor: colors.black,
@@ -309,7 +345,7 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
-    marginBottom: 8, // REDUCIDO
+    marginBottom: 8,
   },
   levelContainer: {
     flexDirection: 'row',
@@ -319,7 +355,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: 12, // REDUCIDO
+    marginRight: 12,
   },
   levelInfo: {
     flex: 1,
@@ -332,7 +368,7 @@ const styles = StyleSheet.create({
   levelMessage: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginTop: 2, // REDUCIDO
+    marginTop: 2,
   },
   moodContainer: {
     flexDirection: 'row',
@@ -342,7 +378,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    marginRight: 12, // REDUCIDO
+    marginRight: 12,
   },
   moodText: {
     flex: 1,
@@ -351,8 +387,8 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     backgroundColor: colors.primaryLight,
-    paddingHorizontal: 12, // REDUCIDO
-    paddingVertical: 6, // REDUCIDO
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 16,
   },
   registerButtonText: {
@@ -361,7 +397,7 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
   },
   progressContainer: {
-    gap: 8, // REDUCIDO
+    gap: 8,
   },
   progressInfo: {
     flexDirection: 'row',
@@ -389,7 +425,7 @@ const styles = StyleSheet.create({
   },
   tasksButton: {
     backgroundColor: colors.primary,
-    paddingVertical: 10, // REDUCIDO
+    paddingVertical: 10,
     borderRadius: 12,
     alignItems: 'center',
   },
@@ -406,21 +442,20 @@ const styles = StyleSheet.create({
   quoteAuthor: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginTop: 6, // REDUCIDO
+    marginTop: 6,
     textAlign: 'right',
   },
-  // QUICK ACTIONS OPTIMIZADO
   quickActions: {
     flexDirection: 'row',
-    paddingHorizontal: 16, // REDUCIDO
-    gap: 12, // REDUCIDO
-    marginBottom: 12, // REDUCIDO
+    paddingHorizontal: 16,
+    gap: 12,
+    marginBottom: 12,
   },
   quickAction: {
     flex: 1,
     backgroundColor: colors.white,
     alignItems: 'center',
-    padding: 12, // REDUCIDO
+    padding: 12,
     borderRadius: 12,
     elevation: 1,
     shadowColor: colors.black,
@@ -431,7 +466,7 @@ const styles = StyleSheet.create({
   quickActionText: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginTop: 6, // REDUCIDO
+    marginTop: 6,
   },
 });
 

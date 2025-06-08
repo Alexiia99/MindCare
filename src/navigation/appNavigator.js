@@ -1,9 +1,10 @@
-import React from 'react';
+// src/navigation/appNavigator.js
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
+import { Platform, AppState } from 'react-native';
 
 // Importar pantallas principales
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
@@ -14,9 +15,17 @@ import StatisticsScreen from '../screens/Statistics/StatisticsScreen';
 import CrisisScreen from '../screens/Crisis/CrisisScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
 import CustomTasksScreen from '../screens/Settings/CustomTasksScreen';
+import NotificationSettingsScreen from '../screens/Settings/NotificationSettingsScreen';
 
 // Importar colores
 import { colors } from '../constants/colors';
+
+// Importar sistema de notificaciones
+import { 
+  setupReminderSystem, 
+  initializeReminders, 
+  checkPendingReminders 
+} from '../utils/localNotifications';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -44,6 +53,16 @@ const DashboardStack = () => (
       component={SettingsScreen}
       options={{ 
         title: 'Configuración',
+        headerStyle: { backgroundColor: colors.primary },
+        headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
+      }}
+    />
+    <Stack.Screen 
+      name="NotificationSettings" 
+      component={NotificationSettingsScreen}
+      options={{ 
+        title: 'Recordatorios',
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
         headerTitleStyle: { fontWeight: 'bold' },
@@ -129,7 +148,7 @@ const StatisticsStack = () => (
 // Tab Navigator principal - ANDROID CORREGIDO
 const MainTabNavigator = () => {
   // VALORES CORREGIDOS para Android - más alto para no tapar botones
-  const tabBarHeight = Platform.OS === 'ios' ? 75 : 95; // ANDROID: aumentado a 80
+  const tabBarHeight = Platform.OS === 'ios' ? 75 : 95; // ANDROID: aumentado a 95
   const tabBarPaddingBottom = Platform.OS === 'ios' ? 20 : 15; // ANDROID: aumentado a 15
   
   return (
@@ -218,10 +237,55 @@ const MainTabNavigator = () => {
   );
 };
 
-// Navegador principal de la app
+// Navegador principal de la app con SISTEMA DE NOTIFICACIONES INTEGRADO
 const AppNavigator = () => {
+  const navigationRef = useRef();
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {
+    // Inicializar sistema de recordatorios al cargar la app
+    console.log('🔔 Initializing reminder system...');
+    initializeReminders();
+
+    // Configurar sistema de verificación de recordatorios
+    let cleanupFunction = null;
+    
+    // Esperar a que la navegación esté lista
+    const timer = setTimeout(() => {
+      if (navigationRef.current) {
+        console.log('🚀 Setting up reminder system...');
+        cleanupFunction = setupReminderSystem(navigationRef.current);
+        
+        // Verificar recordatorios inmediatamente
+        checkPendingReminders(navigationRef.current);
+      }
+    }, 1000);
+
+    // Escuchar cambios en el estado de la app
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        // La app volvió al primer plano, verificar recordatorios
+        console.log('📱 App came to foreground, checking reminders...');
+        if (navigationRef.current) {
+          checkPendingReminders(navigationRef.current);
+        }
+      }
+      appState.current = nextAppState;
+    });
+
+    // Cleanup
+    return () => {
+      clearTimeout(timer);
+      cleanupFunction && cleanupFunction();
+      subscription?.remove();
+    };
+  }, []);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <MainTabNavigator />
     </NavigationContainer>
   );

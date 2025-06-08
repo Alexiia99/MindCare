@@ -1,3 +1,4 @@
+// src/screens/Crisis/CrisisScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -13,9 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, typography, spacing } from '../../constants/colors';
+import BreathingExercises from '../../components/BreathingExercises';
 
 const CrisisScreen = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [showBreathing, setShowBreathing] = useState(false);
 
   const groundingSteps = [
     {
@@ -58,6 +61,36 @@ const CrisisScreen = ({ navigation }) => {
       description: "Emergencias médicas",
       color: colors.warning,
     },
+  ];
+
+  const quickHelpOptions = [
+    {
+      id: 'breathing',
+      title: 'Ejercicios de Respiración',
+      description: '5 técnicas guiadas para calmar la ansiedad',
+      icon: 'leaf-outline',
+      color: colors.success,
+      action: () => setShowBreathing(true)
+    },
+    {
+      id: 'grounding',
+      title: 'Técnica 5-4-3-2-1',
+      description: 'Vuelve al presente con tus sentidos',
+      icon: 'hand-left-outline',
+      color: colors.primary,
+      action: () => {
+        // Scroll a la sección de grounding
+        setCurrentStep(0);
+      }
+    },
+    {
+      id: 'call',
+      title: 'Línea de Crisis',
+      description: 'Habla con alguien ahora mismo',
+      icon: 'call-outline',
+      color: colors.danger,
+      action: () => handleCall('024')
+    }
   ];
 
   const handleCall = (number) => {
@@ -103,6 +136,30 @@ const CrisisScreen = ({ navigation }) => {
           <Text style={styles.subtitle}>
             Este momento difícil va a pasar. Respira conmigo.
           </Text>
+        </View>
+
+        {/* NUEVO: Ayuda Rápida */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⚡ Ayuda Inmediata</Text>
+          <Text style={styles.quickHelpDescription}>
+            Elige la técnica que más te ayude en este momento:
+          </Text>
+          
+          <View style={styles.quickHelpGrid}>
+            {quickHelpOptions.map((option) => (
+              <TouchableOpacity
+                key={option.id}
+                style={[styles.quickHelpCard, { borderColor: option.color }]}
+                onPress={option.action}
+              >
+                <View style={[styles.quickHelpIcon, { backgroundColor: option.color + '20' }]}>
+                  <Ionicons name={option.icon} size={24} color={option.color} />
+                </View>
+                <Text style={styles.quickHelpTitle}>{option.title}</Text>
+                <Text style={styles.quickHelpDesc}>{option.description}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
         {/* Contactos de emergencia */}
@@ -192,19 +249,40 @@ const CrisisScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Técnicas de respiración */}
+        {/* ACTUALIZADO: Técnicas de respiración */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🫁 Respiración calmante</Text>
+          <Text style={styles.sectionTitle}>🫁 Técnicas de Respiración</Text>
           
-          <View style={styles.breathingCard}>
-            <Text style={styles.breathingTitle}>Respiración 4-7-8</Text>
-            <Text style={styles.breathingSteps}>
-              • Inhala por 4 segundos{'\n'}
-              • Mantén por 7 segundos{'\n'}
-              • Exhala por 8 segundos{'\n'}
-              • Repite 4 veces
-            </Text>
-          </View>
+          <TouchableOpacity 
+            style={styles.breathingCard}
+            onPress={() => setShowBreathing(true)}
+          >
+            <View style={styles.breathingHeader}>
+              <View style={styles.breathingIconContainer}>
+                <Ionicons name="leaf-outline" size={24} color={colors.success} />
+              </View>
+              <View style={styles.breathingInfo}>
+                <Text style={styles.breathingTitle}>Ejercicios Guiados</Text>
+                <Text style={styles.breathingSubtitle}>
+                  5 técnicas diferentes con guía visual
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+            </View>
+            
+            <View style={styles.breathingPreview}>
+              <View style={styles.techniquePreview}>
+                <Text style={styles.techniquePreviewText}>• Respiración 4-7-8</Text>
+              </View>
+              <View style={styles.techniquePreview}>
+                <Text style={styles.techniquePreviewText}>• Respiración Cuadrada</Text>
+              </View>
+              <View style={styles.techniquePreview}>
+                <Text style={styles.techniquePreviewText}>• Respiración Coherente</Text>
+              </View>
+              <Text style={styles.moreText}>+ 2 técnicas más</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Recordatorios positivos */}
@@ -241,6 +319,12 @@ const CrisisScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* NUEVO: Modal de Ejercicios de Respiración */}
+      <BreathingExercises 
+        visible={showBreathing}
+        onClose={() => setShowBreathing(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -300,6 +384,50 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
     marginBottom: 12,
+  },
+
+  // NUEVO: QUICK HELP
+  quickHelpDescription: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+
+  quickHelpGrid: {
+    gap: 12,
+  },
+
+  quickHelpCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: colors.background,
+  },
+
+  quickHelpIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
+  quickHelpTitle: {
+    flex: 1,
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: colors.textPrimary,
+    marginBottom: 2,
+  },
+
+  quickHelpDesc: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+    marginTop: 2,
   },
   
   // EMERGENCY CONTACTS
@@ -440,26 +568,66 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   
-  // BREATHING CARD
+  // NUEVO: BREATHING CARD MEJORADA
   breathingCard: {
     backgroundColor: colors.background,
-    padding: 12,
     borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: colors.info,
+    borderLeftColor: colors.success,
+    overflow: 'hidden',
+  },
+
+  breathingHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+  },
+
+  breathingIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.success + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
+  breathingInfo: {
+    flex: 1,
   },
   
   breathingTitle: {
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginBottom: 8,
   },
-  
-  breathingSteps: {
-    fontSize: typography.sizes.base,
+
+  breathingSubtitle: {
+    fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    lineHeight: 24,
+    marginTop: 2,
+  },
+
+  breathingPreview: {
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+  },
+
+  techniquePreview: {
+    marginBottom: 4,
+  },
+
+  techniquePreviewText: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+  },
+
+  moreText: {
+    fontSize: typography.sizes.sm,
+    color: colors.success,
+    fontWeight: typography.weights.medium,
+    marginTop: 4,
   },
   
   // REMINDER CARDS

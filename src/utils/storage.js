@@ -200,3 +200,108 @@ export const exportData = async () => {
     return null;
   }
 };
+
+// === NUEVAS FUNCIONES PARA HISTORIAL DE DIARIO ===
+
+// Obtener entrada de diario por fecha específica
+export const getJournalByDate = async (dateKey) => {
+  try {
+    const journals = await getAllJournals();
+    return journals[dateKey] || null;
+  } catch (error) {
+    console.error('Error getting journal by date:', error);
+    return null;
+  }
+};
+
+// Obtener todas las entradas de diario con sus fechas
+export const getAllJournalsWithDates = async () => {
+  try {
+    const journals = await getAllJournals();
+    return Object.entries(journals).map(([dateKey, entry]) => ({
+      dateKey,
+      date: new Date(dateKey),
+      ...entry
+    })).sort((a, b) => new Date(b.dateKey) - new Date(a.dateKey));
+  } catch (error) {
+    console.error('Error getting all journals with dates:', error);
+    return [];
+  }
+};
+
+// Buscar en entradas de diario
+export const searchJournalEntries = async (searchTerm) => {
+  try {
+    const journals = await getAllJournals();
+    const term = searchTerm.toLowerCase();
+    
+    return Object.entries(journals)
+      .filter(([_, entry]) => 
+        entry?.text?.toLowerCase().includes(term) ||
+        entry?.goodThing?.toLowerCase().includes(term)
+      )
+      .map(([dateKey, entry]) => ({
+        dateKey,
+        date: new Date(dateKey),
+        ...entry
+      }))
+      .sort((a, b) => new Date(b.dateKey) - new Date(a.dateKey));
+  } catch (error) {
+    console.error('Error searching journal entries:', error);
+    return [];
+  }
+};
+
+// Obtener estadísticas del diario
+export const getJournalStats = async () => {
+  try {
+    const journals = await getAllJournals();
+    const entries = Object.values(journals).filter(entry => entry?.text || entry?.goodThing);
+    
+    return {
+      totalEntries: entries.length,
+      entriesWithText: entries.filter(entry => entry?.text).length,
+      entriesWithGoodThing: entries.filter(entry => entry?.goodThing).length,
+      avgTextLength: entries.reduce((sum, entry) => sum + (entry?.text?.length || 0), 0) / entries.length || 0,
+      firstEntry: entries.length > 0 ? Object.keys(journals).sort()[0] : null,
+      lastEntry: entries.length > 0 ? Object.keys(journals).sort().pop() : null,
+    };
+  } catch (error) {
+    console.error('Error getting journal stats:', error);
+    return {
+      totalEntries: 0,
+      entriesWithText: 0,
+      entriesWithGoodThing: 0,
+      avgTextLength: 0,
+      firstEntry: null,
+      lastEntry: null,
+    };
+  }
+};
+
+// Exportar entradas de diario en formato legible
+export const exportJournalData = async () => {
+  try {
+    const journals = await getAllJournals();
+    const moods = await getMoods();
+    
+    const exportData = Object.entries(journals)
+      .filter(([_, entry]) => entry?.text || entry?.goodThing)
+      .map(([dateKey, entry]) => {
+        const mood = moods[dateKey];
+        return {
+          fecha: dateKey,
+          ánimo: mood?.value ? `${mood.value}/5` : 'No registrado',
+          entrada: entry.text || '',
+          cosaBuena: entry.goodThing || '',
+          timestamp: entry.timestamp || ''
+        };
+      })
+      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    
+    return exportData;
+  } catch (error) {
+    console.error('Error exporting journal data:', error);
+    return [];
+  }
+};
