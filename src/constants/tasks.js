@@ -108,3 +108,27 @@ export const getTasksForLevel = (level) => {
     return predefinedTasks;
   }
 };
+
+// Función para agregar tarea personalizada
+export const addCustomTask = (customTask) => {
+  const newTask = {
+    id: `custom_${Date.now()}`,
+    title: customTask.title,
+    description: customTask.description || '',
+    category: 'custom',
+    level: customTask.level || 2,
+    icon: customTask.icon || 'star-outline',
+    isActive: true,
+    orderIndex: 100 + Date.now(), // Para que aparezcan al final
+  };
+  
+  return newTask;
+};
+
+
+export const getAllTasksForLevel = (level, customTasks = []) => {
+  const predefined = getTasksForLevel(level);
+  const custom = customTasks.filter(task => task.level <= level && task.isActive);
+  
+  return [...predefined, ...custom];
+};

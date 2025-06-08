@@ -446,6 +446,11 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     gap: spacing.sm,
   },
+  backButtonText: {
+  color: colors.primary,
+  fontSize: typography.sizes.base,
+  fontWeight: typography.weights.medium,
+},
 });
 
 export default CrisisScreen;

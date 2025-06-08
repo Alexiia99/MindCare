@@ -3,16 +3,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
-// Importar pantallas 
+// Importar pantallas
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import MoodScreen from '../screens/Mood/MoodScreen';
 import TasksScreen from '../screens/Tasks/TasksScreen';
 import JournalScreen from '../screens/Journal/JournalScreen';
 import StatisticsScreen from '../screens/Statistics/StatisticsScreen';
 import CrisisScreen from '../screens/Crisis/CrisisScreen';
+import SettingsScreen from '../screens/Settings/SettingsScreen';
 
 // Importar colores
 import { colors } from '../constants/colors';
@@ -34,6 +33,15 @@ const DashboardStack = () => (
       options={{ 
         title: 'Panel SOS',
         headerStyle: { backgroundColor: colors.danger },
+        headerTintColor: colors.white,
+      }}
+    />
+    <Stack.Screen 
+      name="Settings" 
+      component={SettingsScreen}
+      options={{ 
+        title: 'Configuración',
+        headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
       }}
     />
@@ -132,8 +140,8 @@ const MainTabNavigator = () => (
       tabBarStyle: {
         backgroundColor: colors.white,
         borderTopColor: colors.background,
-        height: 85,
-        paddingBottom: 30,
+        height: 70,
+        paddingBottom: 15,
         paddingTop: 8,
       },
       headerShown: false,

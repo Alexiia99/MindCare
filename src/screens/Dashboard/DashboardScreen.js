@@ -13,24 +13,29 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../../constants/colors';
 import { getTasksForLevel, taskLevels } from '../../constants/tasks';
 import { getTodayMood, getTodayTasks, getSettings } from '../../utils/storage';
+import { getContextualQuote } from '../../constants/quotes';
 
 const DashboardScreen = ({ navigation }) => {
   const [currentLevel, setCurrentLevel] = useState(2);
   const [todayMood, setTodayMood] = useState(null);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [availableTasks, setAvailableTasks] = useState([]);
+  const [dailyQuote, setDailyQuote] = useState({
+    text: "Cada día es una nueva oportunidad para ser amable contigo mismo.",
+    author: "Anónimo"
+  });
 
   useEffect(() => {
     loadDashboardData();
   }, []);
 
   useEffect(() => {
-  const unsubscribe = navigation.addListener('focus', () => {
-    loadDashboardData();
-  });
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadDashboardData();
+    });
 
-  return unsubscribe;
-}, [navigation]);
+    return unsubscribe;
+  }, [navigation]);
 
   const loadDashboardData = async () => {
     try {
@@ -42,6 +47,10 @@ const DashboardScreen = ({ navigation }) => {
       setTodayMood(mood);
       setCompletedTasks(tasks);
       setAvailableTasks(getTasksForLevel(settings.currentLevel));
+      
+      // Cargar cita contextual
+      const quote = await getContextualQuote(getTodayMood);
+      setDailyQuote(quote);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     }
@@ -110,13 +119,22 @@ const DashboardScreen = ({ navigation }) => {
             </Text>
           </View>
           
-          <TouchableOpacity 
-            style={styles.sosButton}
-            onPress={handleSOSPress}
-          >
-            <Ionicons name="alert-circle" size={24} color={colors.white} />
-            <Text style={styles.sosText}>SOS</Text>
-          </TouchableOpacity>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity 
+              style={styles.settingsButton}
+              onPress={() => navigation.navigate('Settings')}
+            >
+              <Ionicons name="settings-outline" size={24} color={colors.textSecondary} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.sosButton}
+              onPress={handleSOSPress}
+            >
+              <Ionicons name="alert-circle" size={24} color={colors.white} />
+              <Text style={styles.sosText}>SOS</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Nivel actual */}
@@ -181,9 +199,9 @@ const DashboardScreen = ({ navigation }) => {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Pensamiento del día</Text>
           <Text style={styles.quote}>
-            "Cada día es una nueva oportunidad para ser amable contigo mismo."
+            "{dailyQuote.text}"
           </Text>
-          <Text style={styles.quoteAuthor}>- Anónimo</Text>
+          <Text style={styles.quoteAuthor}>- {dailyQuote.author}</Text>
         </View>
 
         {/* Accesos rápidos */}
@@ -230,6 +248,21 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
     textTransform: 'capitalize',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  settingsButton: {
+    padding: spacing.sm,
+    borderRadius: 12,
+    backgroundColor: colors.white,
+    elevation: 1,
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
   },
   sosButton: {
     backgroundColor: colors.danger,
