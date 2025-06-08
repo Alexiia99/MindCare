@@ -67,9 +67,12 @@ const JournalScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header compacto */}
         <View style={styles.header}>
           <Text style={styles.title}>Mi Diario Personal</Text>
           <Text style={styles.date}>
@@ -140,7 +143,7 @@ const JournalScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Consejos */}
+        {/* Consejos compactos */}
         <View style={styles.tipsSection}>
           <Text style={styles.tipsTitle}>💡 Consejos para escribir</Text>
           <Text style={styles.tip}>• No hay respuestas correctas o incorrectas</Text>
@@ -158,15 +161,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  scrollContent: {
+    paddingBottom: 100, // Mantener para que no se tape con navbar, pero el contenido interno será más compacto
+  },
   header: {
-    padding: spacing.lg,
+    paddingHorizontal: 16,
+    paddingTop: 4, // Muy reducido
+    paddingBottom: 8, // Muy reducido
     alignItems: 'center',
   },
   title: {
     fontSize: typography.sizes['2xl'],
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginBottom: spacing.xs,
+    marginBottom: 4, // Reducido
   },
   date: {
     fontSize: typography.sizes.sm,
@@ -175,9 +183,9 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: colors.white,
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
-    padding: spacing.lg,
+    marginHorizontal: 16,
+    marginBottom: 8, // Muy reducido
+    padding: 16,
     borderRadius: 16,
     elevation: 2,
     shadowColor: colors.black,
@@ -189,18 +197,18 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
-    marginBottom: spacing.xs,
+    marginBottom: 4, // Reducido
   },
   sectionSubtitle: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginBottom: spacing.lg,
+    marginBottom: 8, // Muy reducido
   },
   journalInput: {
     borderWidth: 1,
     borderColor: colors.background,
     borderRadius: 12,
-    padding: spacing.md,
+    padding: 12,
     fontSize: typography.sizes.base,
     color: colors.textPrimary,
     backgroundColor: colors.background,
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.success,
     borderRadius: 12,
-    padding: spacing.md,
+    padding: 12,
     fontSize: typography.sizes.base,
     color: colors.textPrimary,
     backgroundColor: colors.white,
@@ -219,17 +227,17 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   saveSection: {
-    paddingHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
+    paddingHorizontal: 16,
+    marginBottom: 8, // Muy reducido
   },
   saveButton: {
     backgroundColor: colors.textLight,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: spacing.lg,
+    paddingVertical: 14, // Reducido ligeramente
     borderRadius: 12,
-    gap: spacing.sm,
+    gap: 8,
   },
   saveButtonActive: {
     backgroundColor: colors.primary,
@@ -241,14 +249,14 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: colors.white,
-    fontSize: typography.sizes.lg,
+    fontSize: typography.sizes.base,
     fontWeight: typography.weights.bold,
   },
   tipsSection: {
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.xl,
+    marginHorizontal: 16,
+    marginBottom: 8, // Muy reducido
     backgroundColor: colors.white,
-    padding: spacing.lg,
+    padding: 16,
     borderRadius: 16,
     borderLeftWidth: 4,
     borderLeftColor: colors.info,
@@ -257,12 +265,12 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.base,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
-    marginBottom: spacing.sm,
+    marginBottom: 8, // Reducido
   },
   tip: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginBottom: spacing.xs,
+    marginBottom: 4, // Reducido
     lineHeight: 18,
   },
 });

@@ -5,7 +5,7 @@ export const predefinedTasks = [
     description: 'Pequeño pero importante primer paso del día',
     category: 'basic',
     level: 1, // Disponible desde nivel supervivencia
-    icon: 'bed',
+    icon: 'bed-outline',
     isActive: true,
     orderIndex: 1,
   },
@@ -15,7 +15,7 @@ export const predefinedTasks = [
     description: 'Hidratarse es fundamental para el bienestar',
     category: 'basic',
     level: 1,
-    icon: 'water-drop',
+    icon: 'water-outline',
     isActive: true,
     orderIndex: 2,
   },
@@ -25,7 +25,7 @@ export const predefinedTasks = [
     description: 'Cuidado personal básico para sentirse mejor',
     category: 'basic', 
     level: 1,
-    icon: 'shower',
+    icon: 'rainy-outline',
     isActive: true,
     orderIndex: 3,
   },
@@ -35,7 +35,7 @@ export const predefinedTasks = [
     description: 'La luz natural y el aire fresco mejoran el ánimo',
     category: 'basic',
     level: 2, // Nivel básico
-    icon: 'sunny',
+    icon: 'sunny-outline',
     isActive: true,
     orderIndex: 4,
   },
@@ -45,7 +45,7 @@ export const predefinedTasks = [
     description: 'Movimiento suave para activar el cuerpo',
     category: 'basic',
     level: 2,
-    icon: 'walk',
+    icon: 'walk-outline',
     isActive: true,
     orderIndex: 5,
   },
@@ -124,7 +124,6 @@ export const addCustomTask = (customTask) => {
   
   return newTask;
 };
-
 
 export const getAllTasksForLevel = (level, customTasks = []) => {
   const predefined = getTasksForLevel(level);

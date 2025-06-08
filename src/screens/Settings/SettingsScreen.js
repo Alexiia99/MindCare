@@ -26,6 +26,15 @@ const SettingsScreen = ({ navigation }) => {
     loadSettings();
   }, []);
 
+  useEffect(() => {
+    // Recargar configuración cuando se vuelve a la pantalla
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadSettings();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   const loadSettings = async () => {
     try {
       const currentSettings = await getSettings();
@@ -48,6 +57,28 @@ const SettingsScreen = ({ navigation }) => {
   const handleNotificationsToggle = async (enabled) => {
     const newNotifications = { ...settings.notifications, enabled };
     await updateSetting('notifications', newNotifications);
+  };
+
+  const handleLevelChange = () => {
+    Alert.alert(
+      'Cambiar nivel por defecto',
+      'Selecciona tu nivel habitual. Siempre puedes cambiarlo según cómo te sientas cada día.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { 
+          text: 'Supervivencia (días difíciles)', 
+          onPress: () => updateSetting('currentLevel', 1)
+        },
+        { 
+          text: 'Estabilización (días normales)', 
+          onPress: () => updateSetting('currentLevel', 2)
+        },
+        { 
+          text: 'Progreso (días buenos)', 
+          onPress: () => updateSetting('currentLevel', 3)
+        },
+      ]
+    );
   };
 
   const handleClearData = () => {
@@ -91,6 +122,15 @@ const SettingsScreen = ({ navigation }) => {
     }
   };
 
+  const getLevelName = (level) => {
+    const levels = {
+      1: 'Supervivencia',
+      2: 'Estabilización',
+      3: 'Progreso'
+    };
+    return levels[level] || 'Desconocido';
+  };
+
   const menuItems = [
     {
       section: 'Configuración General',
@@ -106,9 +146,9 @@ const SettingsScreen = ({ navigation }) => {
         {
           icon: 'layers-outline',
           title: 'Nivel por defecto',
-          subtitle: `Nivel ${settings.currentLevel}`,
+          subtitle: `Nivel ${settings.currentLevel} - ${getLevelName(settings.currentLevel)}`,
           type: 'navigate',
-          onPress: () => Alert.alert('Próximamente', 'Esta función estará disponible pronto'),
+          onPress: handleLevelChange,
         },
       ],
     },
@@ -120,7 +160,7 @@ const SettingsScreen = ({ navigation }) => {
           title: 'Tareas personalizadas',
           subtitle: `${settings.customTasks.length} tareas creadas`,
           type: 'navigate',
-          onPress: () => Alert.alert('Próximamente', 'Podrás crear tareas personalizadas pronto'),
+          onPress: () => navigation.navigate('CustomTasks'),
         },
         {
           icon: 'call-outline',
@@ -170,7 +210,7 @@ const SettingsScreen = ({ navigation }) => {
           type: 'info',
           onPress: () => Alert.alert(
             'Ayuda',
-            'Si necesitas ayuda:\n\n• Revisa los consejos en cada pantalla\n• Usa el panel SOS para crisis\n• Contacta profesionales si necesitas apoyo'
+            'Si necesitas ayuda:\n\n• Revisa los consejos en cada pantalla\n• Usa el panel SOS para crisis\n• Contacta profesionales si necesitas apoyo\n• Recuerda: esta app no reemplaza ayuda profesional'
           ),
         },
       ],
@@ -242,6 +282,9 @@ const SettingsScreen = ({ navigation }) => {
           <Text style={styles.footerText}>
             MindCare mantiene todos tus datos en tu dispositivo.{'\n'}
             Nada se envía a servidores externos.
+          </Text>
+          <Text style={styles.versionText}>
+            Versión 1.0.0 - Build {Date.now().toString().slice(-6)}
           </Text>
         </View>
       </ScrollView>
@@ -326,6 +369,12 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
+    marginBottom: spacing.sm,
+  },
+  versionText: {
+    fontSize: typography.sizes.xs,
+    color: colors.textLight,
+    textAlign: 'center',
   },
 });
 

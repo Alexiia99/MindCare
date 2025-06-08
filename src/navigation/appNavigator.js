@@ -3,8 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
 
-// Importar pantallas
+// Importar pantallas principales
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import MoodScreen from '../screens/Mood/MoodScreen';
 import TasksScreen from '../screens/Tasks/TasksScreen';
@@ -12,6 +13,7 @@ import JournalScreen from '../screens/Journal/JournalScreen';
 import StatisticsScreen from '../screens/Statistics/StatisticsScreen';
 import CrisisScreen from '../screens/Crisis/CrisisScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
+import CustomTasksScreen from '../screens/Settings/CustomTasksScreen';
 
 // Importar colores
 import { colors } from '../constants/colors';
@@ -34,6 +36,7 @@ const DashboardStack = () => (
         title: 'Panel SOS',
         headerStyle: { backgroundColor: colors.danger },
         headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     />
     <Stack.Screen 
@@ -43,6 +46,17 @@ const DashboardStack = () => (
         title: 'Configuración',
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
+      }}
+    />
+    <Stack.Screen 
+      name="CustomTasks" 
+      component={CustomTasksScreen}
+      options={{ 
+        title: 'Tareas Personalizadas',
+        headerStyle: { backgroundColor: colors.primary },
+        headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     />
   </Stack.Navigator>
@@ -58,6 +72,7 @@ const MoodStack = () => (
         title: 'Mi Ánimo',
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     />
   </Stack.Navigator>
@@ -73,6 +88,7 @@ const TasksStack = () => (
         title: 'Tareas Diarias',
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     />
   </Stack.Navigator>
@@ -88,6 +104,7 @@ const JournalStack = () => (
         title: 'Mi Diario',
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     />
   </Stack.Navigator>
@@ -103,77 +120,94 @@ const StatisticsStack = () => (
         title: 'Estadísticas',
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: 'bold' },
       }}
     />
   </Stack.Navigator>
 );
 
 // Tab Navigator principal
-const MainTabNavigator = () => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
+const MainTabNavigator = () => {
+  // Valores que funcionan bien sin taparse
+  const tabBarHeight = Platform.OS === 'ios' ? 90 : 80;
+  const tabBarPaddingBottom = Platform.OS === 'ios' ? 25 : 15;
+  
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
 
-        switch (route.name) {
-          case 'Dashboard':
-            iconName = focused ? 'home' : 'home-outline';
-            break;
-          case 'Mood':
-            iconName = focused ? 'happy' : 'happy-outline';
-            break;
-          case 'Tasks':
-            iconName = focused ? 'checkbox' : 'checkbox-outline';
-            break;
-          case 'Journal':
-            iconName = focused ? 'book' : 'book-outline';
-            break;
-          case 'Statistics':
-            iconName = focused ? 'bar-chart' : 'bar-chart-outline';
-            break;
-        }
+          switch (route.name) {
+            case 'Dashboard':
+              iconName = focused ? 'home' : 'home-outline';
+              break;
+            case 'Mood':
+              iconName = focused ? 'happy' : 'happy-outline';
+              break;
+            case 'Tasks':
+              iconName = focused ? 'checkmark-circle' : 'checkmark-circle-outline';
+              break;
+            case 'Journal':
+              iconName = focused ? 'book' : 'book-outline';
+              break;
+            case 'Statistics':
+              iconName = focused ? 'bar-chart' : 'bar-chart-outline';
+              break;
+          }
 
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-      tabBarActiveTintColor: colors.primary,
-      tabBarInactiveTintColor: colors.textSecondary,
-      tabBarStyle: {
-        backgroundColor: colors.white,
-        borderTopColor: colors.background,
-        height: 70,
-        paddingBottom: 15,
-        paddingTop: 8,
-      },
-      headerShown: false,
-    })}
-  >
-    <Tab.Screen 
-      name="Dashboard" 
-      component={DashboardStack}
-      options={{ tabBarLabel: 'Inicio' }}
-    />
-    <Tab.Screen 
-      name="Mood" 
-      component={MoodStack}
-      options={{ tabBarLabel: 'Ánimo' }}
-    />
-    <Tab.Screen 
-      name="Tasks" 
-      component={TasksStack}
-      options={{ tabBarLabel: 'Tareas' }}
-    />
-    <Tab.Screen 
-      name="Journal" 
-      component={JournalStack}
-      options={{ tabBarLabel: 'Diario' }}
-    />
-    <Tab.Screen 
-      name="Statistics" 
-      component={StatisticsStack}
-      options={{ tabBarLabel: 'Stats' }}
-    />
-  </Tab.Navigator>
-);
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarStyle: {
+          backgroundColor: colors.white,
+          borderTopColor: colors.background,
+          height: tabBarHeight,
+          paddingBottom: tabBarPaddingBottom,
+          paddingTop: 8,
+          elevation: 8,
+          shadowColor: colors.black,
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+          marginBottom: 5,
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen 
+        name="Dashboard" 
+        component={DashboardStack}
+        options={{ tabBarLabel: 'Inicio' }}
+      />
+      <Tab.Screen 
+        name="Mood" 
+        component={MoodStack}
+        options={{ tabBarLabel: 'Ánimo' }}
+      />
+      <Tab.Screen 
+        name="Tasks" 
+        component={TasksStack}
+        options={{ tabBarLabel: 'Tareas' }}
+      />
+      <Tab.Screen 
+        name="Journal" 
+        component={JournalStack}
+        options={{ tabBarLabel: 'Diario' }}
+      />
+      <Tab.Screen 
+        name="Statistics" 
+        component={StatisticsStack}
+        options={{ tabBarLabel: 'Stats' }}
+      />
+    </Tab.Navigator>
+  );
+};
 
 // Navegador principal de la app
 const AppNavigator = () => {
