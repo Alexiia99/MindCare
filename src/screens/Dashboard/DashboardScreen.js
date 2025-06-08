@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -104,8 +105,11 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header - ESPACIADO OPTIMIZADO */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>¡Hola!</Text>
@@ -232,12 +236,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  // NUEVO: Scroll content optimizado
+  scrollContent: {
+    paddingBottom: Platform.OS === 'ios' ? 85 : 75,
+  },
+  // HEADER OPTIMIZADO
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: spacing.lg,
-    paddingTop: spacing.sm,
+    paddingHorizontal: 16, // REDUCIDO
+    paddingTop: 8, // REDUCIDO de spacing.sm
+    paddingBottom: 8, // NUEVO
   },
   greeting: {
     fontSize: typography.sizes['2xl'],
@@ -252,10 +262,10 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: 8, // REDUCIDO
   },
   settingsButton: {
-    padding: spacing.sm,
+    padding: 8, // REDUCIDO
     borderRadius: 12,
     backgroundColor: colors.white,
     elevation: 1,
@@ -268,8 +278,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.danger,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 12, // REDUCIDO
+    paddingVertical: 8, // REDUCIDO
     borderRadius: 20,
     elevation: 3,
     shadowColor: colors.danger,
@@ -280,13 +290,14 @@ const styles = StyleSheet.create({
   sosText: {
     color: colors.white,
     fontWeight: typography.weights.bold,
-    marginLeft: spacing.xs,
+    marginLeft: 4, // REDUCIDO
   },
+  // CARD OPTIMIZADA
   card: {
     backgroundColor: colors.white,
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
-    padding: spacing.lg,
+    marginHorizontal: 16, // REDUCIDO
+    marginBottom: 12, // REDUCIDO de spacing.lg
+    padding: 12, // REDUCIDO de spacing.lg
     borderRadius: 16,
     elevation: 2,
     shadowColor: colors.black,
@@ -298,7 +309,7 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.semibold,
     color: colors.textPrimary,
-    marginBottom: spacing.md,
+    marginBottom: 8, // REDUCIDO
   },
   levelContainer: {
     flexDirection: 'row',
@@ -308,7 +319,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: spacing.md,
+    marginRight: 12, // REDUCIDO
   },
   levelInfo: {
     flex: 1,
@@ -321,7 +332,7 @@ const styles = StyleSheet.create({
   levelMessage: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginTop: spacing.xs,
+    marginTop: 2, // REDUCIDO
   },
   moodContainer: {
     flexDirection: 'row',
@@ -331,7 +342,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    marginRight: spacing.md,
+    marginRight: 12, // REDUCIDO
   },
   moodText: {
     flex: 1,
@@ -340,8 +351,8 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     backgroundColor: colors.primaryLight,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 12, // REDUCIDO
+    paddingVertical: 6, // REDUCIDO
     borderRadius: 16,
   },
   registerButtonText: {
@@ -350,7 +361,7 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
   },
   progressContainer: {
-    gap: spacing.md,
+    gap: 8, // REDUCIDO
   },
   progressInfo: {
     flexDirection: 'row',
@@ -378,7 +389,7 @@ const styles = StyleSheet.create({
   },
   tasksButton: {
     backgroundColor: colors.primary,
-    paddingVertical: spacing.md,
+    paddingVertical: 10, // REDUCIDO
     borderRadius: 12,
     alignItems: 'center',
   },
@@ -395,20 +406,21 @@ const styles = StyleSheet.create({
   quoteAuthor: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginTop: spacing.sm,
+    marginTop: 6, // REDUCIDO
     textAlign: 'right',
   },
+  // QUICK ACTIONS OPTIMIZADO
   quickActions: {
     flexDirection: 'row',
-    paddingHorizontal: spacing.lg,
-    gap: spacing.md,
-    marginBottom: spacing.xl,
+    paddingHorizontal: 16, // REDUCIDO
+    gap: 12, // REDUCIDO
+    marginBottom: 12, // REDUCIDO
   },
   quickAction: {
     flex: 1,
     backgroundColor: colors.white,
     alignItems: 'center',
-    padding: spacing.lg,
+    padding: 12, // REDUCIDO
     borderRadius: 12,
     elevation: 1,
     shadowColor: colors.black,
@@ -419,7 +431,7 @@ const styles = StyleSheet.create({
   quickActionText: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginTop: spacing.sm,
+    marginTop: 6, // REDUCIDO
   },
 });
 

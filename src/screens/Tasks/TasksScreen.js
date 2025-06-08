@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Animated,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -149,8 +150,11 @@ const TasksScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header con progreso */}
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header con progreso - OPTIMIZADO */}
         <View style={styles.header}>
           <View style={styles.progressSection}>
             <Text style={styles.progressTitle}>Progreso de hoy</Text>
@@ -171,7 +175,7 @@ const TasksScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Selector de nivel */}
+        {/* Selector de nivel - OPTIMIZADO */}
         <View style={styles.levelSection}>
           <Text style={styles.sectionTitle}>Nivel de dificultad</Text>
           <Text style={styles.levelMessage}>{currentLevelInfo.message}</Text>
@@ -198,7 +202,7 @@ const TasksScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Lista de tareas */}
+        {/* Lista de tareas - OPTIMIZADO */}
         <View style={styles.tasksSection}>
           <View style={styles.tasksSectionHeader}>
             <Text style={styles.sectionTitle}>Tareas de hoy</Text>
@@ -293,7 +297,7 @@ const TasksScreen = ({ navigation }) => {
           )}
         </View>
 
-        {/* Botón para agregar tareas personalizadas */}
+        {/* Botón para agregar tareas personalizadas - OPTIMIZADO */}
         <View style={styles.customTasksSection}>
           <TouchableOpacity
             style={styles.customTasksButton}
@@ -318,7 +322,7 @@ const TasksScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Botón de día muy difícil */}
+        {/* Botón de día muy difícil - OPTIMIZADO */}
         <View style={styles.emergencySection}>
           <TouchableOpacity
             style={styles.emergencyButton}
@@ -331,7 +335,7 @@ const TasksScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Mensaje de ánimo */}
+        {/* Mensaje de ánimo - OPTIMIZADO */}
         {completedTasks.length === availableTasks.length && availableTasks.length > 0 && (
           <View style={styles.congratulationsSection}>
             <Ionicons name="trophy" size={32} color="#ffa726" />
@@ -347,16 +351,27 @@ const TasksScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  // CONTENEDOR PRINCIPAL
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
   },
-  header: {
-    padding: 16,
+  
+  // SCROLL CONTENT OPTIMIZADO
+  scrollContent: {
+    paddingBottom: Platform.OS === 'ios' ? 85 : 90, // Android aumentado
   },
+  
+  // HEADER OPTIMIZADO
+  header: {
+    paddingHorizontal: 16, // REDUCIDO
+    paddingTop: 8, // REDUCIDO
+    paddingBottom: 6, // REDUCIDO
+  },
+  
   progressSection: {
     backgroundColor: 'white',
-    padding: 16,
+    padding: 12, // REDUCIDO
     borderRadius: 16,
     elevation: 2,
     shadowColor: '#000',
@@ -364,107 +379,133 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  
   progressTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2d3748',
-    marginBottom: 4,
+    marginBottom: 3, // REDUCIDO
   },
+  
   progressText: {
     fontSize: 14,
     color: '#718096',
-    marginBottom: 12,
+    marginBottom: 8, // REDUCIDO
   },
+  
   progressBar: {
     height: 8,
     backgroundColor: '#f8fafc',
     borderRadius: 4,
-    marginBottom: 8,
+    marginBottom: 6, // REDUCIDO
   },
+  
   progressFill: {
     height: '100%',
     backgroundColor: '#667eea',
     borderRadius: 4,
   },
+  
   progressPercentage: {
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
     color: '#667eea',
   },
+  
+  // LEVEL SECTION OPTIMIZADO
   levelSection: {
-    padding: 16,
+    paddingHorizontal: 16, // REDUCIDO
+    paddingVertical: 8, // REDUCIDO
   },
+  
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2d3748',
-    marginBottom: 8,
+    marginBottom: 6, // REDUCIDO
   },
+  
   levelMessage: {
     fontSize: 14,
     color: '#718096',
-    marginBottom: 16,
+    marginBottom: 10, // REDUCIDO
     fontStyle: 'italic',
   },
+  
   levelSelector: {
-    gap: 8,
+    gap: 6, // REDUCIDO
   },
+  
   levelButton: {
     backgroundColor: 'white',
-    padding: 12,
+    padding: 10, // REDUCIDO
     borderRadius: 12,
     borderWidth: 2,
     alignItems: 'center',
   },
+  
   levelButtonText: {
     fontSize: 16,
     fontWeight: '500',
     color: '#2d3748',
   },
+  
   selectedLevelButtonText: {
     color: 'white',
   },
+  
+  // TASKS SECTION OPTIMIZADO
   tasksSection: {
-    padding: 16,
+    paddingHorizontal: 16, // REDUCIDO
+    paddingVertical: 8, // REDUCIDO
   },
+  
   tasksSectionHeader: {
-    marginBottom: 16,
+    marginBottom: 10, // REDUCIDO
   },
+  
   tasksCount: {
     fontSize: 12,
     color: '#a0aec0',
-    marginTop: 4,
+    marginTop: 3, // REDUCIDO
   },
+  
   emptyState: {
     alignItems: 'center',
-    padding: 32,
+    padding: 24, // REDUCIDO
     backgroundColor: 'white',
     borderRadius: 16,
     borderStyle: 'dashed',
     borderWidth: 2,
     borderColor: '#a0aec0',
   },
+  
   emptyTitle: {
     fontSize: 16,
     fontWeight: '500',
     color: '#2d3748',
-    marginTop: 8,
-    marginBottom: 8,
+    marginTop: 6, // REDUCIDO
+    marginBottom: 6, // REDUCIDO
   },
+  
   reloadButton: {
     backgroundColor: '#667eea',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
   },
+  
   reloadButtonText: {
     color: 'white',
     fontWeight: '500',
   },
+  
   tasksContainer: {
-    gap: 12,
+    gap: 8, // REDUCIDO
   },
+  
+  // TASK ITEM OPTIMIZADO
   taskItem: {
     backgroundColor: 'white',
     borderRadius: 12,
@@ -473,122 +514,148 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    minHeight: 80, // Altura mínima garantizada
+    minHeight: 70, // REDUCIDO
   },
+  
   taskContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
-    minHeight: 80, // Altura mínima garantizada
+    padding: 12, // REDUCIDO
+    minHeight: 70, // REDUCIDO
   },
+  
   taskLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
+  
   checkbox: {
     width: 24,
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#a0aec0',
-    marginRight: 12,
+    marginRight: 10, // REDUCIDO
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
   },
+  
   checkedBox: {
     backgroundColor: '#66bb6a',
     borderColor: '#66bb6a',
   },
+  
   customCheckbox: {
     borderColor: '#667eea',
   },
+  
   customCheckedBox: {
     backgroundColor: '#667eea',
     borderColor: '#667eea',
   },
+  
   taskInfo: {
     flex: 1,
   },
+  
   taskTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 3, // REDUCIDO
   },
+  
   taskTitle: {
-    fontSize: 16,
+    fontSize: 15, // REDUCIDO
     fontWeight: '500',
     color: '#2d3748',
     flex: 1,
   },
+  
   completedTaskTitle: {
     textDecorationLine: 'line-through',
     color: '#718096',
   },
+  
   customBadge: {
     backgroundColor: '#e2e8f0',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-    marginLeft: 4,
+    paddingHorizontal: 5, // REDUCIDO
+    paddingVertical: 1, // REDUCIDO
+    borderRadius: 6, // REDUCIDO
+    marginLeft: 3, // REDUCIDO
   },
+  
   customBadgeText: {
-    fontSize: 10,
+    fontSize: 9, // REDUCIDO
     color: '#667eea',
     fontWeight: '500',
   },
+  
   taskDescription: {
-    fontSize: 14,
+    fontSize: 13, // REDUCIDO
     color: '#718096',
-    lineHeight: 18,
+    lineHeight: 16, // REDUCIDO
   },
+  
   taskIconContainer: {
-    padding: 4,
+    padding: 3, // REDUCIDO
   },
+  
+  // CUSTOM TASKS SECTION OPTIMIZADO
   customTasksSection: {
     paddingHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: 10, // REDUCIDO
   },
+  
   customTasksButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-    padding: 16,
+    padding: 12, // REDUCIDO
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#667eea',
     borderStyle: 'dashed',
-    gap: 8,
+    gap: 6, // REDUCIDO
   },
+  
   customTasksButtonText: {
     color: '#667eea',
     fontWeight: '500',
   },
+  
+  // EMERGENCY SECTION OPTIMIZADO
   emergencySection: {
-    padding: 16,
+    paddingHorizontal: 16,
+    marginBottom: 10, // REDUCIDO
   },
+  
   emergencyButton: {
     backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: 12, // REDUCIDO
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#e53e3e',
-    gap: 8,
+    gap: 6, // REDUCIDO
   },
+  
   emergencyButtonText: {
     color: '#e53e3e',
     fontWeight: '500',
   },
+  
+  // CONGRATULATIONS SECTION OPTIMIZADO
   congratulationsSection: {
     alignItems: 'center',
-    padding: 24,
-    margin: 16,
+    padding: 16, // REDUCIDO
+    marginHorizontal: 16,
+    marginBottom: 10, // REDUCIDO
     backgroundColor: 'white',
     borderRadius: 16,
     elevation: 2,
@@ -597,18 +664,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
+  
   congratulationsTitle: {
-    fontSize: 20,
+    fontSize: 18, // REDUCIDO
     fontWeight: 'bold',
     color: '#2d3748',
-    marginTop: 8,
-    marginBottom: 4,
+    marginTop: 6, // REDUCIDO
+    marginBottom: 3, // REDUCIDO
   },
+  
   congratulationsText: {
-    fontSize: 16,
+    fontSize: 14, // REDUCIDO
     color: '#718096',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 20, // REDUCIDO
   },
 });
 

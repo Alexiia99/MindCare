@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -126,7 +127,10 @@ const MoodScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Selector de ánimo general */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>¿Cómo te sientes hoy?</Text>
@@ -238,29 +242,43 @@ const MoodScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  // CONTENEDOR PRINCIPAL
   container: {
     flex: 1,
     backgroundColor: colors.background,
   },
-  section: {
-    padding: spacing.lg,
+  
+  // SCROLL CONTENT OPTIMIZADO
+  scrollContent: {
+    paddingBottom: Platform.OS === 'ios' ? 85 : 75,
   },
+  
+  // SECTION OPTIMIZADA
+  section: {
+    paddingHorizontal: 16, // REDUCIDO
+    paddingVertical: 10, // REDUCIDO
+  },
+  
   sectionTitle: {
     fontSize: typography.sizes.xl,
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginBottom: spacing.xs,
+    marginBottom: 2, // REDUCIDO
   },
+  
   sectionSubtitle: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginBottom: spacing.lg,
+    marginBottom: 12, // REDUCIDO
   },
+  
+  // MOOD SELECTOR OPTIMIZADO
   moodSelector: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: spacing.sm,
+    gap: 8, // REDUCIDO
   },
+  
   moodButton: {
     flex: 1,
     aspectRatio: 1,
@@ -273,34 +291,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
+  
   selectedMoodButton: {
     transform: [{ scale: 1.1 }],
     elevation: 4,
     shadowOpacity: 0.3,
   },
+  
   moodButtonText: {
     color: colors.white,
     fontWeight: typography.weights.bold,
-    marginTop: spacing.xs,
+    marginTop: 2, // REDUCIDO
   },
+  
   selectedMoodText: {
     textAlign: 'center',
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.medium,
     color: colors.textPrimary,
-    marginTop: spacing.md,
+    marginTop: 8, // REDUCIDO
   },
+  
+  // EMOTIONS GRID OPTIMIZADO
   emotionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: 6, // REDUCIDO
   },
+  
   emotionChip: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.white,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 10, // REDUCIDO
+    paddingVertical: 6, // REDUCIDO
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.primary,
@@ -310,41 +334,53 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
   },
+  
   selectedEmotionChip: {
     backgroundColor: colors.primary,
   },
+  
   emotionChipText: {
-    marginLeft: spacing.xs,
+    marginLeft: 4, // REDUCIDO
     color: colors.primary,
     fontWeight: typography.weights.medium,
   },
+  
   selectedEmotionChipText: {
     color: colors.white,
   },
+  
+  // ENERGY SELECTOR OPTIMIZADO
   energySelector: {
-    gap: spacing.sm,
+    gap: 6, // REDUCIDO
   },
+  
   energyButton: {
     backgroundColor: colors.white,
-    padding: spacing.lg,
+    padding: 12, // REDUCIDO
     borderRadius: 12,
     borderWidth: 2,
     alignItems: 'center',
   },
+  
   energyButtonText: {
     fontSize: typography.sizes.base,
     fontWeight: typography.weights.medium,
     color: colors.textPrimary,
   },
+  
   selectedEnergyButtonText: {
     color: colors.white,
   },
+  
+  // SAVE SECTION OPTIMIZADA
   saveSection: {
-    padding: spacing.lg,
+    paddingHorizontal: 16, // REDUCIDO
+    paddingVertical: 10, // REDUCIDO
   },
+  
   saveButton: {
     backgroundColor: colors.primary,
-    paddingVertical: spacing.lg,
+    paddingVertical: 12, // REDUCIDO
     borderRadius: 12,
     alignItems: 'center',
     elevation: 2,
@@ -353,11 +389,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
+  
   disabledSaveButton: {
     backgroundColor: colors.textLight,
     elevation: 0,
     shadowOpacity: 0,
   },
+  
   saveButtonText: {
     color: colors.white,
     fontSize: typography.sizes.lg,

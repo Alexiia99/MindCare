@@ -126,11 +126,11 @@ const StatisticsStack = () => (
   </Stack.Navigator>
 );
 
-// Tab Navigator principal
+// Tab Navigator principal - ANDROID CORREGIDO
 const MainTabNavigator = () => {
-  // Valores que funcionan bien sin taparse
-  const tabBarHeight = Platform.OS === 'ios' ? 90 : 80;
-  const tabBarPaddingBottom = Platform.OS === 'ios' ? 25 : 15;
+  // VALORES CORREGIDOS para Android - más alto para no tapar botones
+  const tabBarHeight = Platform.OS === 'ios' ? 75 : 95; // ANDROID: aumentado a 80
+  const tabBarPaddingBottom = Platform.OS === 'ios' ? 20 : 15; // ANDROID: aumentado a 15
   
   return (
     <Tab.Navigator
@@ -160,24 +160,33 @@ const MainTabNavigator = () => {
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
+        // ESTILOS DE TAB BAR OPTIMIZADOS
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.background,
           height: tabBarHeight,
           paddingBottom: tabBarPaddingBottom,
-          paddingTop: 8,
+          paddingTop: Platform.OS === 'ios' ? 4 : 8, // ANDROID: más padding top
           elevation: 8,
           shadowColor: colors.black,
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
           shadowRadius: 3,
+          // POSICIONAMIENTO OPTIMIZADO
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '500',
-          marginBottom: 5,
+          marginBottom: Platform.OS === 'ios' ? 2 : 10, // ANDROID: más margen bottom
+          marginTop: Platform.OS === 'ios' ? 2 : 1, // ANDROID: menos margen top
         },
         headerShown: false,
+        // CONFIGURACIÓN PARA EVITAR OVERLAPPING
+        tabBarHideOnKeyboard: true,
       })}
     >
       <Tab.Screen 

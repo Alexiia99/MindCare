@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -91,7 +92,10 @@ const CrisisScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Ionicons name="heart" size={32} color={colors.danger} />
@@ -242,34 +246,47 @@ const CrisisScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  // CONTENEDOR PRINCIPAL
   container: {
     flex: 1,
     backgroundColor: colors.background,
   },
+  
+  // SCROLL CONTENT OPTIMIZADO
+  scrollContent: {
+    paddingBottom: Platform.OS === 'ios' ? 85 : 75,
+  },
+  
+  // HEADER OPTIMIZADO
   header: {
     alignItems: 'center',
-    padding: spacing.xl,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: colors.white,
-    marginBottom: spacing.lg,
+    marginBottom: 12,
   },
+  
   title: {
     fontSize: typography.sizes['3xl'],
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginTop: spacing.sm,
-    marginBottom: spacing.xs,
+    marginTop: 8,
+    marginBottom: 4,
   },
+  
   subtitle: {
     fontSize: typography.sizes.base,
     color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
   },
+  
+  // SECTION OPTIMIZADA
   section: {
     backgroundColor: colors.white,
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
-    padding: spacing.lg,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    padding: 12,
     borderRadius: 16,
     elevation: 2,
     shadowColor: colors.black,
@@ -277,153 +294,184 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  
   sectionTitle: {
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginBottom: spacing.lg,
+    marginBottom: 12,
   },
+  
+  // EMERGENCY CONTACTS
   emergencyButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: spacing.lg,
+    padding: 12,
     borderWidth: 2,
     borderRadius: 12,
-    marginBottom: spacing.md,
+    marginBottom: 8,
     backgroundColor: colors.white,
   },
+  
   emergencyInfo: {
     flex: 1,
   },
+  
   emergencyName: {
     fontSize: typography.sizes.base,
     fontWeight: typography.weights.bold,
-    marginBottom: spacing.xs,
+    marginBottom: 2,
   },
+  
   emergencyDescription: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
   },
+  
   emergencyNumber: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 20,
-    gap: spacing.xs,
+    gap: 4,
   },
+  
   emergencyNumberText: {
     color: colors.white,
     fontWeight: typography.weights.bold,
     fontSize: typography.sizes.base,
   },
+  
+  // GROUNDING EXERCISE
   groundingDescription: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-    marginBottom: spacing.lg,
+    marginBottom: 12,
     lineHeight: 20,
   },
+  
   groundingCard: {
     backgroundColor: colors.background,
-    padding: spacing.lg,
+    padding: 12,
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: colors.primary,
   },
+  
   stepHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.md,
+    marginBottom: 8,
   },
+  
   stepNumber: {
     fontSize: typography.sizes.sm,
     color: colors.primary,
     fontWeight: typography.weights.medium,
   },
+  
   stepTitle: {
     fontSize: typography.sizes.xl,
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginBottom: spacing.sm,
+    marginBottom: 6,
   },
+  
   stepDescription: {
     fontSize: typography.sizes.base,
     color: colors.textSecondary,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: 12,
   },
+  
   stepActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: 12,
   },
+  
   resetButton: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.textLight,
   },
+  
   resetButtonText: {
     color: colors.textSecondary,
     fontWeight: typography.weights.medium,
   },
+  
   nextButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primary,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 20,
-    gap: spacing.xs,
+    gap: 4,
   },
+  
   nextButtonText: {
     color: colors.white,
     fontWeight: typography.weights.bold,
   },
+  
+  // PROGRESS INDICATOR
   progressIndicator: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: spacing.xs,
+    gap: 4,
   },
+  
   progressDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: colors.textLight,
   },
+  
   progressDotActive: {
     backgroundColor: colors.primary,
   },
+  
+  // BREATHING CARD
   breathingCard: {
     backgroundColor: colors.background,
-    padding: spacing.lg,
+    padding: 12,
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: colors.info,
   },
+  
   breathingTitle: {
     fontSize: typography.sizes.lg,
     fontWeight: typography.weights.bold,
     color: colors.textPrimary,
-    marginBottom: spacing.md,
+    marginBottom: 8,
   },
+  
   breathingSteps: {
     fontSize: typography.sizes.base,
     color: colors.textSecondary,
     lineHeight: 24,
   },
+  
+  // REMINDER CARDS
   reminderCard: {
     backgroundColor: colors.background,
-    padding: spacing.lg,
+    padding: 12,
     borderRadius: 12,
-    marginBottom: spacing.md,
+    marginBottom: 8,
     borderLeftWidth: 4,
     borderLeftColor: colors.success,
   },
+  
   reminder: {
     fontSize: typography.sizes.base,
     color: colors.textPrimary,
@@ -431,26 +479,30 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlign: 'center',
   },
+  
+  // BACK SECTION
   backSection: {
-    paddingHorizontal: spacing.lg,
-    marginBottom: spacing.xl,
+    paddingHorizontal: 16,
+    marginBottom: 12,
   },
+  
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.white,
-    paddingVertical: spacing.lg,
+    paddingVertical: 12,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.primary,
-    gap: spacing.sm,
+    gap: 6,
   },
+  
   backButtonText: {
-  color: colors.primary,
-  fontSize: typography.sizes.base,
-  fontWeight: typography.weights.medium,
-},
+    color: colors.primary,
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.medium,
+  },
 });
 
 export default CrisisScreen;
